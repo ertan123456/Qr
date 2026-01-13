@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>ECHOES • Listen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SOL ÜST: MAIN PAGE -->
+  <a class="backMainBtn" href="index.html" aria-label="Back to Main Page">← Main Page</a>
+
+  <div class="listenWrapper">
+    <h1 id="title">—</h1>
+    <p id="desc">—</p>
+
+    <!-- LISTEN (BAŞTAN ÇAL) -->
+    <button id="listenBtn" class="listenImgBtn" aria-label="Listen">
+      <img src="images/listen.png" alt="Listen for info" />
+    </button>
+
+    <!-- KONTROL PANELİ -->
+    <div class="audioPanel" role="group" aria-label="Audio controls">
+      <!-- -10 saniye -->
+      <button class="imgBtn" id="rewBtn" title="Back 10 seconds">
+        <img src="images/back10.png" alt="Back 10 seconds">
+      </button>
+
+      <!-- PAUSE / PLAY TOGGLE -->
+      <button class="imgBtn" id="pauseBtn" title="Play / Pause">
+        <img src="images/pause.png" alt="Pause / Play">
+      </button>
+
+      <!-- +10 saniye -->
+      <button class="imgBtn" id="fwdBtn" title="Forward 10 seconds">
+        <img src="images/fwd10.png" alt="Forward 10 seconds">
+      </button>
+
+      <div class="apDivider"></div>
+
+      <!-- MUTE -->
+      <button class="imgBtn" id="volDown" title="Mute">
+        <img src="images/mute.png" alt="Mute">
+      </button>
+
+      <!-- UNMUTE -->
+      <button class="imgBtn" id="volUp" title="Unmute">
+        <img src="images/volume.png" alt="Unmute">
+      </button>
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="audio" preload="metadata"></audio>
+
+    <a class="backLink" href="index.html">← Back to Map</a>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const places = (typeof PLACES !== "undefined" ? PLACES : []);
+    const place = places.find(p => p.id === id);
+
+    const titleEl = document.getElementById("title");
+    const descEl  = document.getElementById("desc");
+    const audio   = document.getElementById("audio");
+
+    const listenBtn = document.getElementById("listenBtn");
+    const pauseBtn  = document.getElementById("pauseBtn");
+    const rewBtn    = document.getElementById("rewBtn");
+    const fwdBtn    = document.getElementById("fwdBtn");
+    const volDown   = document.getElementById("volDown");
+    const volUp     = document.getElementById("volUp");
+
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+    function seekBy(seconds){
+      if (!isFinite(audio.duration)) return;
+      audio.currentTime = clamp(audio.currentTime + seconds, 0, audio.duration);
+    }
+
+    async function playSafe(){
+      try { await audio.play(); } catch(e) {}
+    }
+
+    if (!place) {
+      titleEl.textContent = "Place not found";
+      descEl.textContent = "Invalid link.";
+      listenBtn.disabled = true;
+      document.querySelector(".audioPanel").style.display = "none";
+    } else {
+      titleEl.textContent = place.name;
+      descEl.textContent  = place.desc;
+      audio.src = place.audio;
+
+      audio.volume = 0.85;
+      audio.muted = false;
+
+      // LISTEN = baştan çal
+      listenBtn.addEventListener("click", async () => {
+        audio.currentTime = 0;
+        await playSafe();
+      });
+
+      // PAUSE = toggle (pause/play)
+      pauseBtn.addEventListener("click", async () => {
+        if (audio.paused) await playSafe();
+        else audio.pause();
+      });
+
+      // -10 / +10
+      rewBtn.addEventListener("click", () => seekBy(-10));
+      fwdBtn.addEventListener("click", () => seekBy(+10));
+
+      // MUTE / UNMUTE
+      volDown.addEventListener("click", () => { audio.muted = true; });
+      volUp.addEventListener("click", () => { audio.muted = false; });
+    }
+  </script>
+<!-- ALT ORTA LOGO -->
+  
+</body>
+</html>

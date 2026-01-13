@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Walk And City</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="hero">
+      <h1>ECHOES</h1>
+      <p>Echoes of the city, guided by technology.</p>
+    </div>
+
+    <div class="shell">
+      <div class="mapLayout">
+
+        <!-- SIDEBAR: görsel + hotspot -->
+        <aside class="sidebarImgWrap" aria-label="Voiced Locations">
+          <img class="sidebarImg" src="images/sidebar.png" alt="Voiced Locations Panel">
+
+          <a class="hotspot hs-yivli" href="place.html?id=yivli-minare" aria-label="Yivli Minare"></a>
+          <a class="hotspot hs-saat"  href="place.html?id=saat-kulesi" aria-label="Saat Kulesi"></a>
+          <a class="hotspot hs-uc"    href="place.html?id=uc-kapilar" aria-label="Üç Kapılar"></a>
+        </aside>
+
+        <!-- HARİTA: SADECE MAP -->
+        <!-- SAĞ: harita + frame -->
+       <div class="mapFrame">
+  <!-- FRAME (arkada, sadece kenarlık gibi) -->
+       <img src="images/frame.png" class="mapFrameImg" alt="Map Frame">
+
+  <!-- HARİTA (önde) -->
+       <div id="map"></div>
+      </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="data.js"></script>
+
+  <script>
+    const START_CENTER = [36.8852, 30.7056];
+
+    const map = L.map("map", {
+      zoomControl: true,
+      dragging: true,
+      touchZoom: true,
+      doubleClickZoom: true,
+      scrollWheelZoom: true,
+      boxZoom: false,
+      keyboard: false,
+      tap: false
+    }).setView(START_CENTER, 16);
+
+    const bounds = L.latLngBounds(
+      [36.8725, 30.6900],
+      [36.8945, 30.7205]
+    );
+    map.setMaxBounds(bounds);
+    map.options.maxBoundsViscosity = 1.0;
+
+    map.setMinZoom(15);
+    map.setMaxZoom(19);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19
+    }).addTo(map);
+
+    // ICONS
+    const iconSize = [90, 90];
+    const iconAnchor = [45, 85];
+    const popupAnchor = [0, -85];
+
+    const ICONS = {
+      "uc-kapilar": L.icon({
+        iconUrl: "icons/hadrian.png",
+        iconSize,
+        iconAnchor,
+        popupAnchor
+      }),
+      "saat-kulesi": L.icon({
+        iconUrl: "icons/saatkulesi.png",
+        iconSize,
+        iconAnchor,
+        popupAnchor
+      }),
+      "yivli-minare": L.icon({
+        iconUrl: "icons/yivliminare.png",
+        iconSize,
+        iconAnchor,
+        popupAnchor
+      })
+    };
+
+    // Markerlar
+    PLACES.forEach(p => {
+      L.marker([p.lat, p.lng], { icon: ICONS[p.id] })
+        .addTo(map)
+        .bindPopup(`
+          <div style="font-family:system-ui; line-height:1.3">
+            <b>${p.name}</b><br>
+            <a href="place.html?id=${p.id}">🎧 Listen</a>
+          </div>
+        `);
+    });
+  </script>
+<!-- ALT ORTA LOGO -->
+<img
+  src="images/team7672.png"
+  alt="Team 7672 Logo"
+  class="bottomCenterLogo"
+/>
+</body>
+</html>
