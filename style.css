@@ -374,3 +374,5 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .imgBtn img{ width: 120px; }   /* gerekirse 105px yap */
   .apBtn{ width: 52px; height: 44px; }
 }
+.sidebarImgWrap { z-index: 5; }
+.hotspot { z-index: 10; }
