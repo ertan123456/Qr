@@ -15,7 +15,7 @@
 
 *{ box-sizing: border-box; }
 
-html, body { height: 100%; }
+html, body { max-width: 100%; overflow-x: hidden; }
 body{
   font-family: "RomanSD", serif;
   margin:0;
@@ -336,4 +336,41 @@ body{
   z-index: 5;                 /* FRAME’İN ÜSTÜNDE */
   border-radius: 14px;
   overflow: hidden;
+}
+/* ✅ Mobilde yatay taşmayı komple kapat */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+/* ✅ iOS safe area (üst/alt çentik için) */
+.listenWrapper{
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: calc(18px + env(safe-area-inset-top));
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+/* ✅ Listen görseli mobilde tam sığsın */
+.listenImgBtn{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.listenImgBtn img{
+  width: min(92vw, 700px);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ✅ Alt panel mobilde taşmasın: sarılabilsin */
+.audioPanel{
+  width: min(96vw, 980px);
+  max-width: 100%;
+  flex-wrap: wrap;          /* 🔥 en kritik satır */
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ✅ Kontrol görsellerini mobilde küçült */
+@media (max-width: 520px){
+  .imgBtn img{ width: 120px; }   /* gerekirse 105px yap */
+  .apBtn{ width: 52px; height: 44px; }
 }
